@@ -13,7 +13,7 @@ class FeaturesContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Smarter Preparation for\nMedical Exams", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700)),
+          Text("Smarter Preparation\nfor Medical Exams", style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700)),
           SizedBox(height: 24),
           Text(
             "Your personalized learning platform for NEET-PG, INI-CET, and FMGE exam preparation with adaptive learning, performance analytics, and spaced repetition.",

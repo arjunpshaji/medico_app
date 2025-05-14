@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medico_app/modules/home/views/home_page.dart';
 import 'package:medico_app/modules/login/widgets/divider_text_widget.dart';
 import 'package:medico_app/modules/login/widgets/features_container.dart';
-import 'package:medico_app/modules/login/widgets/icon_text_widget.dart';
 import 'package:medico_app/modules/login/widgets/powered_by_widget.dart';
 import 'package:medico_app/modules/login/widgets/terms_container.dart';
 import 'package:medico_app/theme/app_theme.dart';
@@ -9,6 +9,7 @@ import 'package:medico_app/theme/widgets/common_appbar.dart';
 import 'package:medico_app/theme/widgets/input_text.dart';
 import 'package:medico_app/theme/widgets/primary_button.dart';
 import 'package:medico_app/theme/widgets/primary_outline_button.dart';
+import 'package:medico_app/theme/widgets/youtube_screen.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -58,7 +59,12 @@ class LoginPage extends StatelessWidget {
                   child: Text("Forgot password?", style: TextStyle(color: appColor(context).primary, fontWeight: FontWeight.w500)),
                 ),
                 SizedBox(height: 16),
-                PrimaryButton(buttonText: "Sign in", onPressed: () {}),
+                PrimaryButton(
+                  buttonText: "Sign in",
+                  onPressed: () {
+                    Navigator.push(context, HomePage.route());
+                  },
+                ),
                 SizedBox(height: 24),
                 DividerTextWidget(),
                 SizedBox(height: 16),
@@ -83,7 +89,9 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: appColor(context).secondaryText),
                 ),
                 SizedBox(height: 24),
-                
+                YouTubeScreen(),
+                SizedBox(height: 16),
+                PrimaryOutlineButton(width: 150, buttonText: "Explore Us", onPressed: () {}, textColor: appColor(context).primaryText),
               ],
             ),
           ),

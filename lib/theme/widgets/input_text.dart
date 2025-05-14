@@ -58,7 +58,7 @@ class InputText extends StatelessWidget {
               suffixIcon: prefixIcon,
               alignLabelWithHint: true,
               hintText: hintText,
-              hintStyle: TextStyle(color: appColor(context).secondaryText),
+              hintStyle: TextStyle(color: appColor(context).secondaryText, overflow: TextOverflow.ellipsis),
               contentPadding:
                   height > 52
                       ? const EdgeInsets.only(top: 12, bottom: 12, left: 12, right: 12)

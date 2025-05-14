@@ -39,6 +39,7 @@ class CommonAppbar extends StatelessWidget {
       shadowColor: Colors.black,
       automaticallyImplyLeading: false,
       centerTitle: false,
+      leadingWidth: 75,
       leading: leadingWidget,
       title: Text(
         title,
@@ -47,6 +48,7 @@ class CommonAppbar extends StatelessWidget {
         style: titleStyle ?? TextStyle(color: appColor(context).primary, fontSize: 16, fontWeight: FontWeight.w600),
       ),
       actions: actionWidget,
+      actionsPadding: EdgeInsets.only(right: 16),
     );
   }
 }

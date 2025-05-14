@@ -10,6 +10,7 @@ class IconTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           padding: EdgeInsets.all(8),
@@ -21,7 +22,10 @@ class IconTextWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: appColor(context).primaryText)),
-            Text(subTitle, style: TextStyle(fontSize: 13, color: appColor(context).secondaryText)),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 100,
+              child: Text(subTitle, style: TextStyle(fontSize: 13, color: appColor(context).secondaryText)),
+            ),
           ],
         ),
       ],
