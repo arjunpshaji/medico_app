@@ -8,17 +8,19 @@ class PrimaryOutlineButton extends StatelessWidget {
   final double? height;
   final double? width;
   final TextOverflow? overFlow;
-  final Color? textColor;
+  final TextStyle? textStyle;
+  final EdgeInsetsGeometry? padding;
 
   const PrimaryOutlineButton({
     super.key,
     required this.buttonText,
     required this.onPressed,
     this.buttonColor,
-    this.height = 49.0,
-    this.width = double.infinity,
+    this.height,
+    this.width,
     this.overFlow,
-    this.textColor,
+    this.textStyle,
+    this.padding,
   });
 
   @override
@@ -29,6 +31,7 @@ class PrimaryOutlineButton extends StatelessWidget {
       child: InkWell(
         onTap: onPressed,
         child: Container(
+          padding: padding,
           decoration: BoxDecoration(
             color: appColor(context).whiteColor,
             borderRadius: BorderRadius.circular(8),
@@ -38,7 +41,7 @@ class PrimaryOutlineButton extends StatelessWidget {
             child: Text(
               textAlign: TextAlign.center,
               buttonText,
-              style: TextStyle(color: textColor ?? appColor(context).whiteColor, overflow: overFlow, fontWeight: FontWeight.w600),
+              style: textStyle ?? TextStyle(color: appColor(context).primaryText, overflow: overFlow, fontWeight: FontWeight.w600),
             ),
           ),
         ),

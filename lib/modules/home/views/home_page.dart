@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:medico_app/modules/home/widgets/container_tile.dart';
+import 'package:medico_app/modules/home/widgets/continue_learning_tile.dart';
 import 'package:medico_app/modules/home/widgets/grid_tile_widget.dart';
 import 'package:medico_app/modules/home/widgets/home_appbar.dart';
+import 'package:medico_app/modules/home/widgets/leaderboard_widget.dart';
+import 'package:medico_app/modules/home/widgets/recommended_tooltip_text.dart';
 import 'package:medico_app/theme/app_theme.dart';
 import 'package:medico_app/theme/app_transition.dart';
+import 'package:medico_app/theme/widgets/bottom_navbar.dart';
 import 'package:medico_app/theme/widgets/primary_button.dart';
+import 'package:medico_app/theme/widgets/primary_outline_button.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -16,6 +21,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavbar(),
+      // floatingActionButton: BottomNavbar(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: appColor(context).secondaryBackground,
       appBar: PreferredSize(preferredSize: Size.fromHeight(75), child: HomeAppbar()),
       body: Padding(
@@ -26,19 +34,6 @@ class HomePage extends StatelessWidget {
             Text("Welcome, Substantia Gelatinosa", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: appColor(context).primaryText)),
             Text("Preparing for FMGE", style: TextStyle(fontSize: 14, color: appColor(context).secondaryText)),
             SizedBox(height: 24),
-            // SizedBox(
-            //   height: 255,
-            //   child: GridView.count(
-            //     physics: NeverScrollableScrollPhysics(),
-            //     crossAxisCount: 2,
-            //     crossAxisSpacing: 8,
-            //     mainAxisSpacing: 8,
-            //     childAspectRatio: 1.3,
-            //     children: List.generate(4, (index) {
-            //       return GridTileWidget();
-            //     }),
-            //   ),
-            // ),
             Row(spacing: 8, children: [GridTileWidget(), GridTileWidget()]),
             SizedBox(height: 16),
             Row(spacing: 8, children: [GridTileWidget(), GridTileWidget()]),
@@ -77,29 +72,13 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 28),
             Text("Continue Learning", style: TextStyle(fontWeight: FontWeight.w600)),
+            SizedBox(height: 8),
+            ContinueLearningTile(),
+            SizedBox(height: 28),
+            RecommendedTooltipText(),
             SizedBox(height: 12),
-            Container(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Text("Otorhinolaryngology", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(color: appColor(context).primary!.withValues(alpha: 0.25), borderRadius: BorderRadius.circular(4)),
-                        child: Text("0% Complete", style: TextStyle(color: appColor(context).primary, fontSize: 12)),
-                      ),
-                    ],
-                  ),
-                  Text("Pyq And Pyt Topics Of Otorhinolaryngology", style: TextStyle(color: appColor(context).secondaryText, fontSize: 12)),
-                  SizedBox(height: 8),
-                  Text("0 of 69 questions", style: TextStyle(color: appColor(context).secondaryText, fontSize: 12)),
-                  SizedBox(height: 8),
-                ],
-              ),
-            ),
             ListView.separated(
               shrinkWrap: true,
               itemBuilder: (c, i) {
@@ -108,7 +87,59 @@ class HomePage extends StatelessWidget {
               separatorBuilder: (c, i) => SizedBox(height: 8),
               itemCount: 5,
             ),
-            // Text("ssss",style: TextStyle(color: Colors.deepOrange),)
+            SizedBox(height: 28),
+            Text("Leaderbord", style: TextStyle(fontWeight: FontWeight.w600)),
+            SizedBox(height: 8),
+            LeaderboardWidget(),
+            SizedBox(height: 28),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: appColor(context).secondaryText!.withValues(alpha: 0.15)),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                spacing: 8,
+                children: [
+                  Image.asset("assets/icons/medal.png", width: 25, height: 25, color: appColor(context).primary),
+                  Text("Take Full Mock Exams", style: TextStyle(fontWeight: FontWeight.w700)),
+                  Spacer(),
+                  PrimaryOutlineButton(
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    buttonText: "Upgrade to BETA",
+                    textStyle: TextStyle(color: appColor(context).primaryText, fontSize: 12, fontWeight: FontWeight.w600),
+                    buttonColor: appColor(context).whiteColor,
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 28),
+            Text("Recent Activity", style: TextStyle(fontWeight: FontWeight.w600)),
+            SizedBox(height: 12),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: appColor(context).whiteColor,
+                border: Border.all(color: appColor(context).secondaryText!.withValues(alpha: 0.25)),
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemBuilder: (c, i) {
+                  return Row(
+                    spacing: 6,
+                    children: [
+                      Icon(Icons.circle, size: 12, color: appColor(context).primary),
+                      SizedBox(width: MediaQuery.of(context).size.width-80,child: Text("""Started "Ooootorhinolaryngology - PYQ and PYT Topics of Otorhinolaryngology" module""", style: TextStyle(fontSize: 12))),
+                    ],
+                  );
+                },
+                separatorBuilder: (c, i) => SizedBox(height: 8),
+                itemCount: 3,
+              ),
+            ),
+            SizedBox(height: 30)
           ],
         ),
       ),

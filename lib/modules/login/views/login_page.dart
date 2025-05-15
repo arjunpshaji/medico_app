@@ -4,6 +4,7 @@ import 'package:medico_app/modules/login/widgets/divider_text_widget.dart';
 import 'package:medico_app/modules/login/widgets/features_container.dart';
 import 'package:medico_app/modules/login/widgets/powered_by_widget.dart';
 import 'package:medico_app/modules/login/widgets/terms_container.dart';
+import 'package:medico_app/support/api_agent.dart';
 import 'package:medico_app/theme/app_theme.dart';
 import 'package:medico_app/theme/widgets/common_appbar.dart';
 import 'package:medico_app/theme/widgets/input_text.dart';
@@ -16,6 +17,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final api = MedicoApi();
     late TextEditingController controller = TextEditingController();
     late TextEditingController passwordController = TextEditingController();
     return Scaffold(
@@ -61,14 +63,30 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: 16),
                 PrimaryButton(
                   buttonText: "Sign in",
-                  onPressed: () {
-                    Navigator.push(context, HomePage.route());
+                  onPressed: () async {
+                    // on login button tapped
+                    final ok = await api.login(credential: 'dr.sgr', password: 'medpg123');
+                    if (ok) {
+                      await api.fetchCsrfToken();
+                      // now you can call getProfile, fetch tasks, etc.
+                      final profileResp = await api.getProfile();
+                      print(profileResp.data);
+                    } else {
+                      // show error
+                    }
                   },
+                  // Navigator.push(context, HomePage.route());
                 ),
                 SizedBox(height: 24),
                 DividerTextWidget(),
                 SizedBox(height: 16),
-                PrimaryOutlineButton(buttonText: "Create new account", textColor: appColor(context).primaryText, onPressed: () {}),
+                PrimaryOutlineButton(
+                  width: double.infinity,
+                  height: 49,
+                  buttonText: "Create new account",
+                  textStyle: TextStyle(color: appColor(context).primaryText, fontSize: 14, fontWeight: FontWeight.w600),
+                  onPressed: () {},
+                ),
               ],
             ),
           ),
@@ -91,7 +109,13 @@ class LoginPage extends StatelessWidget {
                 SizedBox(height: 24),
                 YouTubeScreen(),
                 SizedBox(height: 16),
-                PrimaryOutlineButton(width: 150, buttonText: "Explore Us", onPressed: () {}, textColor: appColor(context).primaryText),
+                PrimaryOutlineButton(
+                  width: 150,
+                  height: 49,
+                  buttonText: "Explore Us",
+                  onPressed: () {},
+                  textStyle: TextStyle(color: appColor(context).primaryText, fontSize: 14, fontWeight: FontWeight.w600),
+                ),
               ],
             ),
           ),
