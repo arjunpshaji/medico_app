@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medico_app/modules/home/widgets/key_value_widget.dart';
+import 'package:medico_app/modules/home/widgets/leaderboard_title_widget.dart';
 import 'package:medico_app/theme/app_theme.dart';
 
 class LeaderboardWidget extends StatelessWidget {
@@ -21,34 +23,7 @@ class LeaderboardWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Icon(Icons.emoji_events_outlined, color: appColor(context).secondaryText),
-                const SizedBox(width: 8),
-                const Text("Leaderboard", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const Spacer(),
-                DropdownButton<String>(
-                  value: "Questions",
-                  items: const [
-                    DropdownMenuItem(value: "Questions", child: Text("Questions", style: TextStyle(fontSize: 14))),
-                    DropdownMenuItem(value: "Answers", child: Text("Answers", style: TextStyle(fontSize: 14))),
-                  ],
-                  onChanged: (_) {},
-                ),
-                const SizedBox(width: 8),
-                DropdownButton<String>(
-                  value: "Weekly",
-                  items: const [
-                    DropdownMenuItem(value: "Weekly", child: Text("Weekly")),
-                    DropdownMenuItem(value: "Monthly", child: Text("Monthly")),
-                  ],
-                  onChanged: (_) {},
-                ),
-              ],
-            ),
-          ),
+          LeaderboardTitleWidget(),
           ListView.builder(
             shrinkWrap: true,
             itemCount: topUsers.length,
@@ -72,7 +47,14 @@ class LeaderboardWidget extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: appColor(context).primaryText),
                       ),
                     ),
-                    Text(user["name"], style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700)),
+                    Flexible(
+                      child: Text(
+                        user["name"],
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
                   ],
                 ),
                 trailing: Column(
@@ -94,21 +76,19 @@ class LeaderboardWidget extends StatelessWidget {
             },
           ),
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(color: appColor(context).secondaryBackground, borderRadius: BorderRadius.circular(8)),
             padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
             margin: EdgeInsets.all(16),
-            child: Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 4,
               children: [
-                Text("Your rank: ", style: TextStyle(color: appColor(context).secondaryText, fontSize: 12)),
-                Text("396", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                // SizedBox(width: 16),
-                Spacer(),
-                Text("Percentile: ", style: TextStyle(color: appColor(context).secondaryText, fontSize: 12)),
-                Text("28", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-                Spacer(),
-                Text("Your score: ", style: TextStyle(color: appColor(context).secondaryText, fontSize: 12)),
-                Text("38", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                KeyValueWidget(keyText: "Your rank: ", valueText: "396"),
+                KeyValueWidget(keyText: "Percentile: ", valueText: "28"),
+                KeyValueWidget(keyText: "Your score: ", valueText: "38"),
               ],
             ),
           ),
@@ -116,11 +96,14 @@ class LeaderboardWidget extends StatelessWidget {
             child: TextButton.icon(
               onPressed: () {},
               icon: Icon(Icons.bar_chart, size: 15, color: appColor(context).secondaryText),
-              label: Text("View Full Leaderboard", style: TextStyle(color: appColor(context).secondaryText, fontWeight: FontWeight.w600, fontSize: 12)),
+              label: Text(
+                "View Full Leaderboard",
+                style: TextStyle(color: appColor(context).secondaryText, fontWeight: FontWeight.w600, fontSize: 12),
+              ),
               style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 16)),
             ),
           ),
-          SizedBox(height: 16)
+          SizedBox(height: 16),
         ],
       ),
     );

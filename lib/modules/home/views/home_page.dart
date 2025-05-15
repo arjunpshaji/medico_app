@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:medico_app/inftrastructure/home/repository/home_repository.dart';
+import 'package:medico_app/inftrastructure/login/models/user_model.dart';
 import 'package:medico_app/modules/home/widgets/container_tile.dart';
 import 'package:medico_app/modules/home/widgets/continue_learning_tile.dart';
 import 'package:medico_app/modules/home/widgets/grid_tile_widget.dart';
 import 'package:medico_app/modules/home/widgets/home_appbar.dart';
 import 'package:medico_app/modules/home/widgets/leaderboard_widget.dart';
 import 'package:medico_app/modules/home/widgets/recommended_tooltip_text.dart';
+import 'package:medico_app/modules/home/widgets/responsive_mocktest_container.dart';
 import 'package:medico_app/theme/app_theme.dart';
 import 'package:medico_app/theme/app_transition.dart';
 import 'package:medico_app/theme/widgets/bottom_navbar.dart';
 import 'package:medico_app/theme/widgets/primary_button.dart';
-import 'package:medico_app/theme/widgets/primary_outline_button.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final UserModel userData;
+  const HomePage({super.key, required this.userData});
 
-  static Route route() {
-    return AppFadeTransition(page: HomePage());
+  static Route route({required UserModel userData}) {
+    return AppFadeTransition(page: HomePage(userData: userData));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavbar(),
-      // floatingActionButton: BottomNavbar(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       backgroundColor: appColor(context).secondaryBackground,
       appBar: PreferredSize(preferredSize: Size.fromHeight(75), child: HomeAppbar()),
       body: Padding(
@@ -31,8 +32,11 @@ class HomePage extends StatelessWidget {
         child: ListView(
           children: [
             SizedBox(height: 24),
-            Text("Welcome, Substantia Gelatinosa", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: appColor(context).primaryText)),
-            Text("Preparing for FMGE", style: TextStyle(fontSize: 14, color: appColor(context).secondaryText)),
+            Text(
+              "Welcome, ${userData.displayName ?? ""}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: appColor(context).primaryText),
+            ),
+            Text("Preparing for ${userData.targetExam ?? "unknown"}", style: TextStyle(fontSize: 14, color: appColor(context).secondaryText)),
             SizedBox(height: 24),
             Row(spacing: 8, children: [GridTileWidget(), GridTileWidget()]),
             SizedBox(height: 16),
@@ -68,7 +72,9 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16),
-                  PrimaryButton(buttonText: "Set AI Goals", onPressed: () {}, buttonColor: appColor(context).primary),
+                  PrimaryButton(buttonText: "Set AI Goals", onPressed: () {
+                    HomeRepository.fetchRecentPractice();
+                  }, buttonColor: appColor(context).primary),
                 ],
               ),
             ),
@@ -81,6 +87,7 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 12),
             ListView.separated(
               shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemBuilder: (c, i) {
                 return ContainerTile(imagePath: "assets/icons/microscope.png", title: "Microbiology", subTitle: "Immunology");
               },
@@ -92,28 +99,7 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 8),
             LeaderboardWidget(),
             SizedBox(height: 28),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: appColor(context).secondaryText!.withValues(alpha: 0.15)),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                spacing: 8,
-                children: [
-                  Image.asset("assets/icons/medal.png", width: 25, height: 25, color: appColor(context).primary),
-                  Text("Take Full Mock Exams", style: TextStyle(fontWeight: FontWeight.w700)),
-                  Spacer(),
-                  PrimaryOutlineButton(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    buttonText: "Upgrade to BETA",
-                    textStyle: TextStyle(color: appColor(context).primaryText, fontSize: 12, fontWeight: FontWeight.w600),
-                    buttonColor: appColor(context).whiteColor,
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
+            ResponsiveMocktestContainer(),
             SizedBox(height: 28),
             Text("Recent Activity", style: TextStyle(fontWeight: FontWeight.w600)),
             SizedBox(height: 12),
@@ -122,16 +108,23 @@ class HomePage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: appColor(context).whiteColor,
                 border: Border.all(color: appColor(context).secondaryText!.withValues(alpha: 0.25)),
-                borderRadius: BorderRadius.circular(10)
+                borderRadius: BorderRadius.circular(10),
               ),
               child: ListView.separated(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (c, i) {
                   return Row(
                     spacing: 6,
                     children: [
                       Icon(Icons.circle, size: 12, color: appColor(context).primary),
-                      SizedBox(width: MediaQuery.of(context).size.width-80,child: Text("""Started "Ooootorhinolaryngology - PYQ and PYT Topics of Otorhinolaryngology" module""", style: TextStyle(fontSize: 12))),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 80,
+                        child: Text(
+                          """Started "Ooootorhinolaryngology - PYQ and PYT Topics of Otorhinolaryngology" module""",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
                     ],
                   );
                 },
@@ -139,7 +132,7 @@ class HomePage extends StatelessWidget {
                 itemCount: 3,
               ),
             ),
-            SizedBox(height: 30)
+            SizedBox(height: 30),
           ],
         ),
       ),

@@ -21,7 +21,7 @@ class FeaturesContainer extends StatelessWidget {
           ),
           SizedBox(height: 24),
           IconTextWidget(
-            imagePath: "assets/icons/open-book.png",
+            imagePath: "assets/icons/book.png",
             title: "Adaptive MCQ Practice",
             subTitle: "Personalized questions based on your learning needs",
           ),

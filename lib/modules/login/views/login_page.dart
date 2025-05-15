@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:medico_app/inftrastructure/login/repository/login_repository.dart';
 import 'package:medico_app/modules/home/views/home_page.dart';
 import 'package:medico_app/modules/login/widgets/divider_text_widget.dart';
 import 'package:medico_app/modules/login/widgets/features_container.dart';
@@ -17,7 +19,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final api = MedicoApi();
     late TextEditingController controller = TextEditingController();
     late TextEditingController passwordController = TextEditingController();
     return Scaffold(
@@ -65,15 +66,16 @@ class LoginPage extends StatelessWidget {
                   buttonText: "Sign in",
                   onPressed: () async {
                     // on login button tapped
-                    final ok = await api.login(credential: 'dr.sgr', password: 'medpg123');
-                    if (ok) {
-                      await api.fetchCsrfToken();
-                      // now you can call getProfile, fetch tasks, etc.
-                      final profileResp = await api.getProfile();
-                      print(profileResp.data);
-                    } else {
-                      // show error
-                    }
+                    AuthApi.login(credential: 'dr.sgr', password: 'medpg123').then((value) async {
+                      if (value.status) {
+                        print(useResult);
+                        // ignore: use_build_context_synchronously
+                        Navigator.push(context, HomePage.route(userData: value.user!));
+                        await AuthApi.fetchCsrfToken();
+                      } else {
+                        // Scaffold.me
+                      }
+                    });
                   },
                   // Navigator.push(context, HomePage.route());
                 ),
