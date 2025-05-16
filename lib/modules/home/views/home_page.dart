@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:medico_app/inftrastructure/home/notifiers/progress_notifier.dart';
 import 'package:medico_app/inftrastructure/home/repository/home_repository.dart';
 import 'package:medico_app/inftrastructure/login/models/user_model.dart';
 import 'package:medico_app/modules/home/widgets/container_tile.dart';
@@ -11,6 +13,7 @@ import 'package:medico_app/modules/home/widgets/responsive_mocktest_container.da
 import 'package:medico_app/theme/app_theme.dart';
 import 'package:medico_app/theme/app_transition.dart';
 import 'package:medico_app/theme/widgets/bottom_navbar.dart';
+import 'package:medico_app/theme/widgets/error_widget.dart';
 import 'package:medico_app/theme/widgets/primary_button.dart';
 
 class HomePage extends StatelessWidget {
@@ -26,7 +29,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: BottomNavbar(),
       backgroundColor: appColor(context).secondaryBackground,
-      appBar: PreferredSize(preferredSize: Size.fromHeight(75), child: HomeAppbar()),
+      appBar: PreferredSize(preferredSize: Size.fromHeight(75), child: HomeAppbar(userName: userData.displayName)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: ListView(
@@ -38,9 +41,25 @@ class HomePage extends StatelessWidget {
             ),
             Text("Preparing for ${userData.targetExam ?? "unknown"}", style: TextStyle(fontSize: 14, color: appColor(context).secondaryText)),
             SizedBox(height: 24),
-            Row(spacing: 8, children: [GridTileWidget(), GridTileWidget()]),
+            Consumer(
+              builder: (context, ref, child) {
+                final progressNotifier = ref.watch(progressNotifierProvider);
+                return progressNotifier.when(
+                  data:
+                      (data) => Row(
+                        spacing: 8,
+                        children: [
+                          GridTileWidget(title: "Questions", subTitle: data[0].totalQuestions?.toString() ?? "", progress: "29%"),
+                          GridTileWidget(title: "Accuracy", subTitle: data[0].accuracy?.toString() ?? ""),
+                        ],
+                      ),
+                  error: (error, stackTrace) => CommonErrorWidget(height: 75),
+                  loading: () => CommonErrorWidget(height: 75),
+                );
+              },
+            ),
             SizedBox(height: 16),
-            Row(spacing: 8, children: [GridTileWidget(), GridTileWidget()]),
+            // Row(spacing: 8, children: [GridTileWidget(), GridTileWidget()]),
             SizedBox(height: 24),
             Container(
               padding: EdgeInsets.all(16),
@@ -72,9 +91,13 @@ class HomePage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16),
-                  PrimaryButton(buttonText: "Set AI Goals", onPressed: () {
-                    HomeRepository.fetchRecentPractice();
-                  }, buttonColor: appColor(context).primary),
+                  PrimaryButton(
+                    buttonText: "Set AI Goals",
+                    onPressed: () {
+                      HomeRepository.fetchRecentPractice();
+                    },
+                    buttonColor: appColor(context).primary,
+                  ),
                 ],
               ),
             ),

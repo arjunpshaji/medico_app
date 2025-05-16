@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:medico_app/inftrastructure/login/repository/login_repository.dart';
 import 'package:medico_app/modules/home/views/home_page.dart';
 import 'package:medico_app/modules/login/widgets/divider_text_widget.dart';
 import 'package:medico_app/modules/login/widgets/features_container.dart';
 import 'package:medico_app/modules/login/widgets/powered_by_widget.dart';
 import 'package:medico_app/modules/login/widgets/terms_container.dart';
-import 'package:medico_app/support/api_agent.dart';
 import 'package:medico_app/theme/app_theme.dart';
 import 'package:medico_app/theme/widgets/common_appbar.dart';
 import 'package:medico_app/theme/widgets/input_text.dart';
@@ -21,6 +19,9 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     late TextEditingController controller = TextEditingController();
     late TextEditingController passwordController = TextEditingController();
+    ValueNotifier<bool> isUsernameEmpty = ValueNotifier(false);
+    ValueNotifier<bool> isPasswordEmpty = ValueNotifier(false);
+    ValueNotifier<bool> isLoading = ValueNotifier(false);
     return Scaffold(
       backgroundColor: appColor(context).background,
       appBar: PreferredSize(
@@ -49,35 +50,84 @@ class LoginPage extends StatelessWidget {
                 Text("Welcome back", style: TextStyle(fontSize: 22, color: appColor(context).primaryText, fontWeight: FontWeight.w800)),
                 Text("Sign in to continue your medical exam preparation journey", style: TextStyle(color: appColor(context).secondaryText)),
                 SizedBox(height: 24),
-                Text("Username, Email or Phone", style: TextStyle(color: appColor(context).primaryText, fontWeight: FontWeight.w600)),
+                ValueListenableBuilder(
+                  valueListenable: isUsernameEmpty,
+                  builder:
+                      (context, value, child) => Text(
+                        "Username, Email or Phone",
+                        style: TextStyle(
+                          color: isUsernameEmpty.value ? appColor(context).errorText : appColor(context).primaryText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                ),
                 SizedBox(height: 12),
-                InputText(controller: controller, hintText: "Enter username, email or phone number"),
+                ValueListenableBuilder(
+                  valueListenable: isUsernameEmpty,
+                  builder:
+                      (context, value, child) => InputText(
+                        controller: controller,
+                        hintText: "Enter username, email or phone number",
+                        errorMessage: isUsernameEmpty.value ? "Username required" : "",
+                        onChanged: (value) => isUsernameEmpty.value = false,
+                      ),
+                ),
                 SizedBox(height: 24),
-                Text("Password", style: TextStyle(color: appColor(context).primaryText, fontWeight: FontWeight.w600)),
+                ValueListenableBuilder(
+                  valueListenable: isPasswordEmpty,
+                  builder:
+                      (context, value, child) => Text(
+                        "Password",
+                        style: TextStyle(
+                          color: isPasswordEmpty.value ? appColor(context).errorText : appColor(context).primaryText,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                ),
                 SizedBox(height: 12),
-                InputText(controller: passwordController, hintText: ""),
+                ValueListenableBuilder(
+                  valueListenable: isPasswordEmpty,
+                  builder:
+                      (context, value, child) => InputText(
+                        controller: passwordController,
+                        hintText: "",
+                        isObscure: true,
+                        onChanged: (value) => isPasswordEmpty.value = false,
+                        errorMessage: isPasswordEmpty.value ? "Password required" : "",
+                      ),
+                ),
                 SizedBox(height: 24),
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: Text("Forgot password?", style: TextStyle(color: appColor(context).primary, fontWeight: FontWeight.w500)),
                 ),
                 SizedBox(height: 16),
-                PrimaryButton(
-                  buttonText: "Sign in",
-                  onPressed: () async {
-                    // on login button tapped
-                    AuthApi.login(credential: 'dr.sgr', password: 'medpg123').then((value) async {
-                      if (value.status) {
-                        print(useResult);
-                        // ignore: use_build_context_synchronously
-                        Navigator.push(context, HomePage.route(userData: value.user!));
-                        await AuthApi.fetchCsrfToken();
-                      } else {
-                        // Scaffold.me
-                      }
-                    });
-                  },
-                  // Navigator.push(context, HomePage.route());
+                ValueListenableBuilder(
+                  valueListenable: isLoading,
+                  builder:
+                      (context, value, child) => PrimaryButton(
+                        buttonText: isLoading.value ? "Signing in" : "Sign in",
+                        buttonColor: isLoading.value ? appColor(context).primary!.withValues(alpha: 0.25) : appColor(context).primary,
+                        onPressed: () async {
+                          if (controller.text.isNotEmpty && passwordController.text.isNotEmpty && isLoading.value == false) {
+                            isLoading.value = true;
+                            isPasswordEmpty.value = controller.text.isEmpty;
+                            isUsernameEmpty.value = passwordController.text.isEmpty;
+                            AuthApi.login(credential: controller.text, password: passwordController.text).then((value) async {
+                              if (value.status) {
+                                isLoading.value = false;
+                                // ignore: use_build_context_synchronously
+                                Navigator.pushAndRemoveUntil(context, HomePage.route(userData: value.user!), (route) => false);
+                                await AuthApi.fetchCsrfToken();
+                              } else {
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(SnackBar(content: Text("Failed to login"), backgroundColor: appColor(context).errorText));
+                              }
+                            });
+                          }
+                        },
+                      ),
                 ),
                 SizedBox(height: 24),
                 DividerTextWidget(),

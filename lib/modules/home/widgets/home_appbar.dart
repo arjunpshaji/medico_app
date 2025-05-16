@@ -3,7 +3,8 @@ import 'package:medico_app/theme/app_theme.dart';
 import 'package:medico_app/theme/widgets/common_appbar.dart';
 
 class HomeAppbar extends StatelessWidget {
-  const HomeAppbar({super.key});
+  final String? userName;
+  const HomeAppbar({super.key, required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +22,9 @@ class HomeAppbar extends StatelessWidget {
         Icon(Icons.notifications_none_rounded, color: appColor(context).whiteColor, size: 32),
         SizedBox(width: 16),
         Container(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.fromLTRB(10, 4,10,4),
           decoration: BoxDecoration(color: appColor(context).whiteColor!.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(50)),
-          child: Text("SG", style: TextStyle(color: appColor(context).whiteColor, fontWeight: FontWeight.w500)),
+          child: Text(userName != null ? userName!  [0] : "G", style: TextStyle(color: appColor(context).whiteColor, fontWeight: FontWeight.w500, fontSize: 16)),
         ),
       ],
     );

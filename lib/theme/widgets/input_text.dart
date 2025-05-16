@@ -17,6 +17,7 @@ class InputText extends StatelessWidget {
   final Widget? prefixIcon;
   final FocusNode? focusNode;
   final List<TextInputFormatter>? inputFormatters;
+  final bool isObscure;
 
   const InputText({
     super.key,
@@ -34,6 +35,7 @@ class InputText extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.textAlign = TextAlign.start,
     this.textStyle = const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
+    this.isObscure = false
   });
 
   @override
@@ -44,6 +46,7 @@ class InputText extends StatelessWidget {
         SizedBox(
           height: height,
           child: TextFormField(
+            obscureText: isObscure,
             cursorHeight: 20,
             textAlign: textAlign,
             textAlignVertical: TextAlignVertical.top,
@@ -77,8 +80,7 @@ class InputText extends StatelessWidget {
             onChanged: onChanged,
             onFieldSubmitted: onFieldSubmitted,
             minLines: null,
-            maxLines: null,
-            expands: true,
+            maxLines: 1,
           ),
         ),
         if (errorMessage != null && errorMessage!.isNotEmpty)
